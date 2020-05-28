@@ -51,22 +51,23 @@ namespace PTSS
 
         public string Solve(string tape)
         {
-            Queue<int> T = new Queue<int>();
+            List<int> T = new List<int>();
             foreach (char c in tape)
             {
-                T.Enqueue(Amap[c]);
+                T.Add(Amap[c]);
             }
 
-            while (T.Count >= M && T.Peek() != Halt)
+            while (T.Count >= M && T.First() != Halt)
             {
-                foreach (int app in P[T.Dequeue()])
+                int delCnt = T.Count + (T.Count % M);
+                int cnt = T.Count;
+
+                for (int i = 0; i < cnt; i += M)
                 {
-                    T.Enqueue(app);
+                    T.AddRange(P[T[i]]);
                 }
-                for (int i = 1; i < M; i++)
-                {
-                    T.Dequeue();
-                }
+                T.RemoveRange(0, delCnt);
+
                 //foreach (int s in T)
                 //{
                 //    Debug.Write(Amap.Keys.ElementAt(s));
@@ -74,7 +75,7 @@ namespace PTSS
                 //Debug.Write("\r\n");
             }
 
-            string result = "";
+            string result = "Done: ";
             foreach (int s in T)
             {
                 result += Amap.Keys.ElementAt(s);
